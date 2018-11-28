@@ -11,7 +11,6 @@ from fake_useragent import UserAgent
 ua = UserAgent()
 headers = {'User-Agent': ua.random}
 
-found_entries = []
 google_base_uri = 'https://www.google.co.uk'
 google_search_uri = 'https://www.google.co.uk/search?q=site%3A*PLACEHOLDER*'
 
