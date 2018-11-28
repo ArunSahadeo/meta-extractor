@@ -53,14 +53,19 @@ def isEmpty(structure):
         return True
 
 def querySite(domain):
-    print(domain)
+    print('Now visiting ' + domain)
     sleep(0.5)
     request_search_page = requests.get(domain, headers=headers)
     soup = BeautifulSoup(request_search_page.text, 'html.parser')
     results = soup.find_all(class_='g')
 
+    if request_search_page.status_code is not 200:
+        print('Error: The URL you are trying to access is returning a status code of %s' % (request_search_page.status_code))
+        print('This is the response we got: %s' % (request_search_page.text))
+        return
+
     if not len(results):
-        print("We couldn't find any pages for this URL: %s" % (domain))
+        print('We couldn\'t find any pages for this URL: %s' % (domain))
         return
 
     for result in results:
