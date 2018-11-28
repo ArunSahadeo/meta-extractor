@@ -36,7 +36,7 @@ def getMeta(meta_type, url):
     elif meta_type == 'description':
         meta_description = soup.find(attrs={'name': 'description'})
 
-        if meta_description['content'] is not None:
+        if meta_description is not None:
             meta_description = meta_description['content']
             return meta_description
         else:
@@ -99,6 +99,7 @@ def querySite(domain):
         message = str("URL: %s Title: %s Description: %s") % (url, meta_title, meta_description)
 
         print(message, file=outfile)
+        sys.exit(1)
 
     if soup.find(isNextLink) is None:
         return
