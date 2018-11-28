@@ -53,7 +53,7 @@ def isEmpty(structure):
 
 def querySite(domain):
     print('Now visiting ' + domain)
-    sleep(0.5)
+    sleep(3)
     request_search_page = requests.get(domain, headers=headers)
     soup = BeautifulSoup(request_search_page.text, 'html.parser')
     results = soup.find_all(class_='g')
@@ -82,7 +82,7 @@ def querySite(domain):
         if len(str(url)) < 1:
             continue
 
-        sleep(0.5)
+        sleep(3)
 
         meta_title = getMeta('title', url)
         meta_description = getMeta('description', url)
