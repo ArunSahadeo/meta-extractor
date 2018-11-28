@@ -99,7 +99,6 @@ def querySite(domain):
         message = str("URL: %s Title: %s Description: %s") % (url, meta_title, meta_description)
 
         print(message, file=outfile)
-        sys.exit(1)
 
     if soup.find(isNextLink) is None:
         return
