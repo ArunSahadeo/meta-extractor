@@ -27,20 +27,20 @@ def getMeta(meta_type, url):
     soup = BeautifulSoup(request_site_page.text, 'html.parser')
     
     if meta_type == 'title':
-        meta_title = soup.find('title').text
-        if len(str(meta_title)) > 0:
-            return meta_title
-
-        return 'N/A'
+        meta_title = soup.find('title')
+        if meta_title is not None and len(str(meta_title.text)) > 0:
+            return meta_title.text
+        else:
+            return 'N/A'
 
     elif meta_type == 'description':
         meta_description = soup.find(attrs={'name': 'description'})
 
-        if meta_description is not None and 'content' in meta_description:
+        if meta_description['content'] is not None:
             meta_description = meta_description['content']
             return meta_description
-
-        return 'N/A'
+        else:
+            return 'N/A'
 
 def isNextLink(tag):
     return tag.name == 'a' and 'next' in str(tag.text).lower()
@@ -74,13 +74,13 @@ def querySite(domain):
         if len(parsed_url.query) > 0 or parsed_url.query is not None:
             query_params = urllib.parse.parse_qs(parsed_url.query)
 
-            if isEmpty(query_params) or 'q' not in query_params:
-                continue
-
-            url = urllib.parse.parse_qs(parsed_url.query)['q'][0]
+            if not isEmpty(query_params) and 'q' in query_params:
+                url = urllib.parse.parse_qs(parsed_url.query)['q'][0]
 
         if len(str(url)) < 1:
             continue
+
+        print('Now crawling ' + url)
 
         sleep(3)
 
