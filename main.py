@@ -20,7 +20,7 @@ outfile = open(outfile_path, 'a')
 
 def getMeta(meta_type, url):
 
-    if (len(str(meta_type)) < 1):
+    if len(str(meta_type)) < 1:
         return
 
     request_site_page = requests.get(url, headers=headers)
