@@ -10,6 +10,7 @@ except ImportError:
 from fake_useragent import UserAgent
 ua = UserAgent()
 headers = {'User-Agent': ua.random}
+url_list = []
 
 google_base_uri = 'https://www.google.co.uk'
 google_search_uri = 'https://www.google.co.uk/search?q=site%3A*PLACEHOLDER*'
@@ -35,6 +36,9 @@ def getMeta(meta_type, url):
 
     elif meta_type == 'description':
         meta_description = soup.find(attrs={'name': 'description'})
+
+        if meta_description is None:
+            meta_description = soup.find('meta', property='og:description')
 
         if meta_description is not None:
             meta_description = meta_description['content']
@@ -108,14 +112,45 @@ def querySite(domain):
     if next_step_link is not None:
         querySite(next_step_link)
 
-domain = input('Please enter the URL you wish to query: ')
-
-while not domain:
+def getDomain():
     domain = input('Please enter the URL you wish to query: ')
 
-while not domain.strip():
-    domain = input('Please enter the URL you wish to query: ')
+    while not domain:
+        domain = input('Please enter the URL you wish to query: ')
 
-domain = urllib.parse.quote_plus(domain).lower()
-google_search_request = str(google_search_uri).replace('*PLACEHOLDER*', domain)
-querySite(google_search_request)
+    while not domain.strip():
+        domain = input('Please enter the URL you wish to query: ')
+
+    domain = urllib.parse.quote_plus(domain).lower()
+    google_search_request = str(google_search_uri).replace('*PLACEHOLDER*', domain)
+    querySite(google_search_request)
+
+has_file = input("Do you have a file to parse? (Please enter yes or no) ")
+
+if has_file.lower() == 'yes' or has_file.lower() == 'y': 
+    try:
+        with open(input("Please enter the name of the file containing your links: ")) as file:
+            for line in file:
+                line = line.rstrip('\n')
+                url_list.append(line)
+
+        if isEmpty(url_list):
+            getDomain()
+        else:
+            for url in url_list:
+                meta_title = getMeta('title', url)
+                meta_description = getMeta('description', url)
+
+                if meta_title is None:
+                    meta_title = 'N/A'
+
+                if meta_description is None:
+                    meta_description = 'N/A'
+
+                message = str("URL: %s Title: %s Description: %s") % (url, meta_title, meta_description)
+
+                print(message, file=outfile)
+    except FileNotFoundError:
+        getDomain()
+else:
+    getDomain()
